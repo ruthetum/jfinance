@@ -1,8 +1,9 @@
 rootProject.name = "kfinance"
 
 include(
-    "common:calendar",
-    "stock:yfinance",
+    "stock:yahoo",
+    "util:calendar",
+    "util:model",
 )
 
 pluginManagement {
