@@ -2,6 +2,7 @@ rootProject.name = "kfinance"
 
 include(
     "stock:dart",
+    "stock:quant",
     "stock:starter",
     "stock:yahoo",
     "util:calendar",
