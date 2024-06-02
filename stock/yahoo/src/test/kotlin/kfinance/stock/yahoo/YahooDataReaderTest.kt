@@ -136,4 +136,66 @@ class YahooDataReaderTest {
             firstRow.getInt(YahooDataOhlcvColumn.ADJ_CLOSE.columnName),
         )
     }
+
+    @DisplayName("특정 정목의 배당 정보를 리스트 형태로 조회한다")
+    @Test
+    fun dividendsShouldBeReturned() {
+        // given
+        // 005930.KS: 삼성전자
+        val symbol = "005930.KS"
+        val startDate = "2021-01-01"
+        val endDate = "2024-01-01"
+
+        // when
+        val dividends = reader.getDividends(symbol, startDate, endDate)
+
+        // then
+        assertEquals(
+            12,
+            dividends.size,
+        )
+
+        val firstDividend = dividends.first()
+        assertEquals(
+            LocalDate.parse("2021-03-30"),
+            firstDividend.first,
+        )
+        assertEquals(
+            361.0,
+            firstDividend.second,
+        )
+    }
+
+    @DisplayName("특정 종목의 배당 정보를 테이블 형태로 조회한다")
+    @Test
+    fun dividendsWithTableShouldBeReturned() {
+        // given
+        // 005930.KS: 삼성전자
+        val symbol = "005930.KS"
+        val startDate = "2021-01-01"
+        val endDate = "2024-01-01"
+
+        // when
+        val table = reader.getDividendsWithTable(symbol, startDate, endDate)
+
+        // then
+        assertEquals(
+            YahooDataDividendsColumn.names(),
+            table.columnNames(),
+        )
+        assertEquals(
+            12,
+            table.rowCount(),
+        )
+
+        val firstRow: Row = table.firstOrNull()!!
+        assertEquals(
+            LocalDate.parse("2021-03-30"),
+            firstRow.getDate(YahooDataDividendsColumn.DATE.columnName),
+        )
+        assertEquals(
+            361,
+            firstRow.getInt(YahooDataDividendsColumn.DIVIDENDS.columnName),
+        )
+    }
 }

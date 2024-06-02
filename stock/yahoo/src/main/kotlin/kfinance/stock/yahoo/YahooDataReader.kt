@@ -42,8 +42,12 @@ class YahooDataReader {
         endDate: String = LocalDate.now().toString(),
         interval: String = "1d",
     ): Table {
-        val ohlcv = this.getOhlcvWithTable(symbol, startDate, endDate, interval)
-        return ohlcv.selectColumns(YahooDataOhlcvColumn.DATE.columnName, YahooDataOhlcvColumn.ADJ_CLOSE.columnName)
+        return try {
+            val ohlcv = this.getOhlcvWithTable(symbol, startDate, endDate, interval)
+            return ohlcv.selectColumns(YahooDataOhlcvColumn.DATE.columnName, YahooDataOhlcvColumn.ADJ_CLOSE.columnName)
+        } catch (e: Exception) {
+            Table.create()
+        }
     }
 
     /**
@@ -86,14 +90,18 @@ class YahooDataReader {
         endDate: String = LocalDate.now().toString(),
         interval: String = "1d",
     ): Table {
-        val url =
-            this.getOhlcvDownloadUrl(
-                symbol,
-                LocalDate.parse(startDate),
-                LocalDate.parse(endDate),
-                YahooDataInterval.of(interval),
-            )
-        return Table.read().csv(URL(url))
+        return try {
+            val url =
+                this.getOhlcvDownloadUrl(
+                    symbol,
+                    LocalDate.parse(startDate),
+                    LocalDate.parse(endDate),
+                    YahooDataInterval.of(interval),
+                )
+            Table.read().csv(URL(url))
+        } catch (e: Exception) {
+            Table.create()
+        }
     }
 
     private fun getOhlcvDownloadUrl(
@@ -104,6 +112,56 @@ class YahooDataReader {
     ): String {
         return "$OHLCV_DOWNLOAD$symbol?period1=${startDate.toTimestamp()}" +
             "&period2=${endDate.toTimestamp()}&interval=${interval.desc}&events=history"
+    }
+
+    /**
+     * 특정 종목의 배당 정보를 리스트 형태로 반환한다
+     * @param symbol 종목 심볼
+     * @param startDate 조회 시작일
+     * @param endDate 조회 종료일
+     */
+    fun getDividends(
+        symbol: String,
+        startDate: String = LocalDate.now().minusYears(1).toString(),
+        endDate: String = LocalDate.now().toString(),
+    ): List<Pair<LocalDate, Double>> {
+        val dividend = this.getDividendsWithTable(symbol, startDate, endDate)
+        return dividend.asSequence().map {
+            Pair(
+                it.getDate(YahooDataDividendsColumn.DATE.columnName),
+                kotlin.runCatching {
+                    it.getDouble(YahooDataDividendsColumn.DIVIDENDS.columnName)
+                }.getOrDefault(it.getInt(YahooDataDividendsColumn.DIVIDENDS.columnName).toDouble()),
+            )
+        }.toList()
+    }
+
+    /**
+     * 특정 종목의 배당 정보를 테이블 형태로 반환한다
+     * @param symbol 종목 심볼
+     * @param startDate 조회 시작일
+     * @param endDate 조회 종료일
+     */
+    fun getDividendsWithTable(
+        symbol: String,
+        startDate: String = LocalDate.now().minusYears(1).toString(),
+        endDate: String = LocalDate.now().toString(),
+    ): Table {
+        return try {
+            val url = this.getDividendDownloadUrl(symbol, LocalDate.parse(startDate), LocalDate.parse(endDate))
+            Table.read().csv(URL(url))
+        } catch (e: Exception) {
+            Table.create()
+        }
+    }
+
+    private fun getDividendDownloadUrl(
+        symbol: String,
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): String {
+        return "$OHLCV_DOWNLOAD$symbol?period1=${startDate.toTimestamp()}" +
+            "&period2=${endDate.toTimestamp()}&interval=1d&events=div"
     }
 
     companion object {
