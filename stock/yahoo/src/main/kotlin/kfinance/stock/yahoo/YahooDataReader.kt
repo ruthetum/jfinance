@@ -110,7 +110,7 @@ class YahooDataReader {
         endDate: LocalDate,
         interval: YahooDataInterval,
     ): String {
-        return "$OHLCV_DOWNLOAD$symbol?period1=${startDate.toTimestamp()}" +
+        return "$FINANCE_DOWNLOAD$symbol?period1=${startDate.toTimestamp()}" +
             "&period2=${endDate.toTimestamp()}&interval=${interval.desc}&events=history"
     }
 
@@ -160,12 +160,12 @@ class YahooDataReader {
         startDate: LocalDate,
         endDate: LocalDate,
     ): String {
-        return "$OHLCV_DOWNLOAD$symbol?period1=${startDate.toTimestamp()}" +
+        return "$FINANCE_DOWNLOAD$symbol?period1=${startDate.toTimestamp()}" +
             "&period2=${endDate.toTimestamp()}&interval=1d&events=div"
     }
 
     companion object {
         private const val API_HOST = "https://query1.finance.yahoo.com"
-        private const val OHLCV_DOWNLOAD = "${API_HOST}/v7/finance/download/"
+        private const val FINANCE_DOWNLOAD = "${API_HOST}/v7/finance/download/"
     }
 }
