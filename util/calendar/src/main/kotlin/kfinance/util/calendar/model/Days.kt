@@ -1,4 +1,4 @@
-package kfinance.common.calendar.model
+package kfinance.util.calendar.model
 
 data class Days(
     val days: List<Day>,

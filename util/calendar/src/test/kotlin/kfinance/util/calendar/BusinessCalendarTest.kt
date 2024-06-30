@@ -1,4 +1,4 @@
-package kfinance.common.calendar
+package kfinance.util.calendar
 
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

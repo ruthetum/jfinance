@@ -1,4 +1,4 @@
-package kfinance.common.calendar.model
+package kfinance.util.calendar.model
 
 import java.time.DayOfWeek
 import java.time.LocalDate

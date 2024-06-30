@@ -1,6 +1,6 @@
-package kfinance.common.calendar.holiday.impl
+package kfinance.util.calendar.holiday.impl
 
-import kfinance.common.calendar.holiday.HolidayFinder
+import kfinance.util.calendar.holiday.HolidayFinder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName

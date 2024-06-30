@@ -1,4 +1,4 @@
-package kfinance.common.calendar.model
+package kfinance.util.calendar.model
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
