@@ -5,6 +5,7 @@ include(
     "stock:quant",
     "stock:starter",
     "stock:yahoo",
+    "util:calculator",
     "util:calendar",
     "util:converter",
     "util:model",
